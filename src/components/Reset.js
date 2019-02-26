@@ -225,6 +225,10 @@ export default function Reset(props) {
 
         button {
           border-radius: 0;
+          appearance: none;
+          outline: none;
+          border: none;
+          background: none;
         }
 
         button:focus {
