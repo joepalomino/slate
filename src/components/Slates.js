@@ -17,16 +17,30 @@ function NewSlate(props) {
     <div>
       <form onSubmit={e => e.preventDefault()}>
         <div>
-          <label>
+          <label for="slateName" css={{
+            display: 'none'
+          }}>
+            
             name:
+            </label>
             <input
+              id="slateName"
               type="text"
               name="slateName"
               value={props.slateName}
               onChange={handleChange}
+              css={{
+                outline: 'none',
+                border: 'none',
+                backgroundColor: '#FAFAFB',
+                borderRadius: 8,
+                padding: '.3rem',
+                width: '100%'
+              }}
+              placeholder='slate name'
             />
             {props.showError && <div>Enter Slate Name</div>}
-          </label>
+          
         </div>
         <button onClick={props.onCreateSlate}>Create</button>
         <button onClick={props.onToggleCreateSlate}>Cancel</button>

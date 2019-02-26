@@ -6,6 +6,7 @@ import styled from "@emotion/styled";
 import { collectionToArray, formatItem } from "../helpers";
 import Item from "./Item";
 import { FaPlus, FaTrash } from "react-icons/fa";
+import {Droppable} from 'react-beautiful-dnd';
 
 const NewItemInput = styled.input`
 border: none;
@@ -173,29 +174,31 @@ export default class List extends Component {
             <FaTrash />
           </button>
         </div>
+            <ul>
+            {collectionToArray(items).map(item => (
+              <li key={item.id}>
+                <div
+                  css={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "flex-start",
+                    padding: "1rem",
+                    marginBottom: "1rem",
+                    backgroundColor: "#FFF",
+                    borderRadius: 10
+                  }}
+                >
+                  <Item item={item} onUpdateState={this.props.onUpdateState} />
+                  <button onClick={() => onDeleteItem(item.id)}>
+                    <FaTrash css={{ fontSize: ".7rem" }} />
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
 
-        <ul>
-          {collectionToArray(items).map(item => (
-            <li key={item.id}>
-              <div
-                css={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "flex-start",
-                  padding: "1rem",
-                  marginBottom: "1rem",
-                  backgroundColor: "#FFF",
-                  borderRadius: 10
-                }}
-              >
-                <Item item={item} onUpdateState={this.props.onUpdateState} />
-                <button onClick={() => onDeleteItem(item.id)}>
-                  <FaTrash css={{ fontSize: ".7rem" }} />
-                </button>
-              </div>
-            </li>
-          ))}
-        </ul>
+
+       
         {this.state.showCreateForm ? (
           <div>
             <NewItem

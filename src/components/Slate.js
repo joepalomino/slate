@@ -6,6 +6,7 @@ import Slates from "./Slates";
 import { Wrapper } from "./Wrapper";
 import { FaArrowLeft, FaPlus } from "react-icons/fa";
 import { jsx } from "@emotion/core";
+import {DragDropContext} from 'react-beautiful-dnd';
 
 function mapItemsToList(listId, items) {
   const itemsKeys = Object.keys(items);
@@ -36,7 +37,6 @@ function NewList(props) {
           width: "100%",
           "&::placeholder": {
             color: "#000",
-            padding: ".5rem"
           }
         }}
       />
@@ -91,6 +91,10 @@ export default class Slate extends Component {
 
   handleGoBack = () => this.props.history.goBack();
 
+  onDragEnd = result => {
+    //todo
+  }
+
   render() {
     const {
       slate,
@@ -134,6 +138,7 @@ export default class Slate extends Component {
           ) : (
             <h1 onClick={this.toggleSlateNameUpdate}>{slate.name}</h1>
           )}
+          <DragDropContext onDragEnd={this.onDragEnd}>
           <ul css={{ marginBottom: "9rem" }}>
             {collectionToArray(lists).map(list => (
               <li key={list.id}>
@@ -148,6 +153,9 @@ export default class Slate extends Component {
               </li>
             ))}
           </ul>
+
+          </DragDropContext>
+          
         </Wrapper>
         <div
           css={{
