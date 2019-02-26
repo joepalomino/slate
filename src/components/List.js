@@ -7,6 +7,7 @@ import { collectionToArray, formatItem } from "../helpers";
 import Item from "./Item";
 import { FaPlus, FaTrash } from "react-icons/fa";
 import {Droppable} from 'react-beautiful-dnd';
+import { throws } from "assert";
 
 const NewItemInput = styled.input`
 border: none;
@@ -26,6 +27,10 @@ const SizeOption = styled.div`
     color: red !important;
   }
 `;
+
+const ItemList = props => (
+  <div ref={props.innerref} {...props}>{props.children}</div>
+)
 
 function NewItem(props) {
 
@@ -148,6 +153,7 @@ export default class List extends Component {
     } = this.props;
     return (
       <div
+        ref={this.props.innerRef}
         css={{
           backgroundColor: "#FAFAFB",
           padding: "1rem",
@@ -173,29 +179,22 @@ export default class List extends Component {
           <button onClick={() => onDeleteList(id)}>
             <FaTrash />
           </button>
+
         </div>
-            <ul>
-            {collectionToArray(items).map(item => (
-              <li key={item.id}>
-                <div
-                  css={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "flex-start",
-                    padding: "1rem",
-                    marginBottom: "1rem",
-                    backgroundColor: "#FFF",
-                    borderRadius: 10
-                  }}
-                >
-                  <Item item={item} onUpdateState={this.props.onUpdateState} />
-                  <button onClick={() => onDeleteItem(item.id)}>
-                    <FaTrash css={{ fontSize: ".7rem" }} />
-                  </button>
-                </div>
-              </li>
+        <Droppable droppableId={id}>
+          {
+            (provided) => (
+              <ItemList innerref={provided.innerRef} {...provided.droppableProps}>
+            {collectionToArray(items).map((item, idx) => (
+              <div key={item.id}>
+                  <Item item={item} onUpdateState={this.props.onUpdateState} index={idx} onDeleteItem={this.props.onDeleteItem}/>
+              </div>
             ))}
-          </ul>
+          </ItemList>
+            )
+          }
+        </Droppable>
+            
 
 
        

@@ -32,7 +32,7 @@ export const formatList = (name, slateId) => ({
   timestamp: Date.now(),
   slate: slateId,
   name,
-  tasks: []
+  items: []
 });
 
 export const UpdatedSlate = (prevSlate, name, color) => ({

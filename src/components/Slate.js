@@ -6,7 +6,7 @@ import Slates from "./Slates";
 import { Wrapper } from "./Wrapper";
 import { FaArrowLeft, FaPlus } from "react-icons/fa";
 import { jsx } from "@emotion/core";
-import {DragDropContext} from 'react-beautiful-dnd';
+import {DragDropContext, Droppable} from 'react-beautiful-dnd';
 
 function mapItemsToList(listId, items) {
   const itemsKeys = Object.keys(items);
@@ -92,7 +92,28 @@ export default class Slate extends Component {
   handleGoBack = () => this.props.history.goBack();
 
   onDragEnd = result => {
-    //todo
+    const {destination, source, draggableId} = result;
+
+    if(!destination) {
+      return;
+    }
+
+    if(destination.droppableId === source.droppableId && destination.index === source.index) {
+      return;
+    }
+
+    const list = this.props.lists[source.droppableId];
+
+    const newItemIds = list.items;
+
+    newItemIds.splice(source.index, 1);
+    newItemIds.splice(destination.index, 0, draggableId);
+
+    //call function to update state
+    this.props.onUpdateState('lists', {
+      ...this.props.lists[source.droppableId],
+      items: newItemIds
+    })
   }
 
   render() {
@@ -142,14 +163,16 @@ export default class Slate extends Component {
           <ul css={{ marginBottom: "9rem" }}>
             {collectionToArray(lists).map(list => (
               <li key={list.id}>
-                <List
+
+                  <List
+
                   list={list}
                   items={mapItemsToList(list.id, items)}
                   onCreateItem={onCreateItem}
                   onDeleteItem={onDeleteItem}
                   onDeleteList={onDeleteList}
                   onUpdateState={this.props.onUpdateState}
-                />
+                />                
               </li>
             ))}
           </ul>
