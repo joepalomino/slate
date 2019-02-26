@@ -7,7 +7,27 @@ import { collectionToArray, formatItem } from "../helpers";
 import Item from "./Item";
 import { FaPlus, FaTrash } from "react-icons/fa";
 
+const NewItemInput = styled.input`
+border: none;
+background-color: #FAFAFB;
+border-radius: 8px;
+padding: .3rem;
+width: 100%;
+`;
+
+const SizeOption = styled.div`
+  display: inline-block;
+  padding: .2rem .4rem;
+  background: #FAFAFB;
+  margin: .4rem;
+  border-radius: 50px;
+  &:checked {
+    color: red !important;
+  }
+`;
+
 function NewItem(props) {
+
   const handleNewitemSubmit = e => {
     e.preventDefault();
     props.onNewitemsubmit();
@@ -21,12 +41,12 @@ function NewItem(props) {
     props.onNewItemSubmit();
   }
 
-  const { itemName, itemSize, itemDueDate, onInputChange, showError } = props;
+  const { itemName, itemSize, itemDueDate, showError, sizeOptions } = props;
   return (
     <form css={{ backgroundColor: "white", borderRadius: 10, padding: "1rem" }}>
       <label>
         Name
-        <input
+        <NewItemInput
           type="text"
           name="itemName"
           value={itemName}
@@ -34,32 +54,39 @@ function NewItem(props) {
         />
         {showError && <div>Enter Name</div>}
       </label>
-      <label>
-        Size:
-        <input
-          type="text"
-          name="itemSize"
-          value={itemSize}
-          onChange={handleInputChange}
-        />
-      </label>
+        <div css={{display: 'flex'}}>
+        {sizeOptions.map(option =>  <SizeOption key={option}  onClick={() => props.onNewItemSizeChange(option)} css={{color: itemSize === option ? 'blue': 'inherit'}}>{option}</SizeOption>)}
+        </div>
       <label>
         Due Date:
-        <input
+        <NewItemInput
           type="date"
           name="itemDueDate"
           value={itemDueDate}
           onChange={handleInputChange}
         />
       </label>
-      <button type="submit" onClick={handleNewItemSubmit}>
-        Create new Item
-      </button>
+      <div css={{display: 'flex', justifyContent: 'center'}}>
+      <div css={{
+        border: 'none',
+        borderRadius: 50,
+        backgroundColor: '#FAFAFB'
+      }}>
+        <button type="submit" onClick={handleNewItemSubmit}>
+          <FaPlus />
+        </button>
+
+      </div>
+
+      </div>
+ 
     </form>
   );
 }
 
 export default class List extends Component {
+  static sizeOptions = ['XS', 'S', 'M', 'L', 'XL'];
+
   state = {
     itemName: "",
     itemSize: "",
@@ -108,6 +135,8 @@ export default class List extends Component {
 
   handleToggleCreateItem = () =>
     this.setState(state => ({ showCreateForm: !state.showCreateForm }));
+
+  handleItemSizeChange = val => this.setState({itemSize: val});
 
   render() {
     const {
@@ -173,7 +202,9 @@ export default class List extends Component {
               {...this.state}
               OnNewItemInputChange={this.handleNewItemInputChange}
               onNewItemSubmit={this.handleCreateItem}
+              onNewItemSizeChange={this.handleItemSizeChange}
               showError={this.state.showError}
+              sizeOptions={List.sizeOptions}
             />
             <div onClick={this.handleToggleCreateItem}>cancel</div>
           </div>
